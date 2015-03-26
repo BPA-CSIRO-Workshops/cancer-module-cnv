@@ -1,6 +1,7 @@
+Table of Content
+================
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
-**Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
 
 - [General Design/Layout](#general-designlayout)
 - [Roll Your Own Module](#roll-your-own-module)
@@ -32,5 +33,5 @@ Rolling your own module from scratch is a pretty big task and will require some 
 If that doesn't scare you, then read on. Otherwise you might want to checkout some of the
 pre-existing Bioinformatics Training Platform (BTP) modules for inspiration:
 
-https://github.com/BPA-CSIRO-Workshops?utf8=%E2%9C%93&query=btp-module
+https://github.com/BPA-CSIRO-Workshops?utf8=%E2%9C%93&query=btp-module-
 
