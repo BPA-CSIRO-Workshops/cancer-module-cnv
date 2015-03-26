@@ -1,5 +1,9 @@
 This repository is a simple template for a Bioinformatics Training Platform (BTP) module.
 
+Table of Contents
+=================
+<!-- toc -->
+
 General Design/Layout
 =====================
 These types of workshop modules are designed to be self contained. That is they contain all the
@@ -16,3 +20,12 @@ the following 4 major elements:
 
 You will find instructions below on how to use this base template to build your own hands-on
 workshop module in the BTP framework.
+
+Roll Your Own Module
+====================
+Rolling your own module from scratch is a pretty big task and will require some knowledge of LaTeX.
+If that doesn't scare you, then read on. Otherwise you might want to checkout some of the
+pre-existing Bioinformatics Training Platform (BTP) modules for inspiration:
+
+https://github.com/BPA-CSIRO-Workshops?utf8=%E2%9C%93&query=btp-module
+
