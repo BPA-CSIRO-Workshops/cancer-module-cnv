@@ -33,5 +33,5 @@ Rolling your own module from scratch is a pretty big task and will require some 
 If that doesn't scare you, then read on. Otherwise you might want to checkout some of the
 pre-existing Bioinformatics Training Platform (BTP) modules for inspiration:
 
-https://github.com/BPA-CSIRO-Workshops?utf8=%E2%9C%93&query=btp-module-
+https://github.com/BPA-CSIRO-Workshops?utf8=✓&query=btp-module-
 
