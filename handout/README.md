@@ -1,5 +1,6 @@
-This directory contains the LaTeX source and any images which are to be used in
-the handout.
+This directory contains the LaTeX source and any images which are to be included in a workshop handout.
+
+Take a look at the [example.tex](https://github.com/BPA-CSIRO-Workshops/btp-module-template/handout/example.tex) file as a guide - it also contains embedded LaTeX comments which you should find helpful when writing LaTeX.
 
 Paragraph Text Environments
 ===========================
