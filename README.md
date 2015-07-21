@@ -30,3 +30,9 @@ the following 4 major elements:
  * **[Tools](tools)** - This describes which tools are used in the handout exercises and how to install them.
  * **[Presentations](presentations)** - This is where you will find presentations for introducing concepts that are
    explored in the handout exercises.
+License
+=======
+The contents of this repository are released under the Creative Commons
+Attribution 3.0 Unported License. For a summary of what this means,
+please see:
+http://creativecommons.org/licenses/by/3.0/deed.en_GB
