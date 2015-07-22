@@ -1,0 +1,5 @@
+# YAML comments start with a hash and continue to the end of the line
+btp::analysis_tools:                                                 # Always start with this line
+  fastqc_0.11.2-0_amd64.deb:                                         # The Debian package filename of a tool required by the module
+    source: 'https://swift.rc.nectar.org.au:8888/v1/AUTH_809/Tools'  # The URL location of where the above named file can be obtained
+    provider: 'dpkg'                                                 # How the above file is to be processed by the deployment backend
