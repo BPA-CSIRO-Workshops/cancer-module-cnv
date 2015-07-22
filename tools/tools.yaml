@@ -3,3 +3,4 @@ btp::analysis_tools:                                                 # Always st
   fastqc_0.11.2-0_amd64.deb:                                         # The Debian package filename of a tool required by the module
     source: 'https://swift.rc.nectar.org.au:8888/v1/AUTH_809/Tools'  # The URL location of where the above named file can be obtained
     provider: 'dpkg'                                                 # How the above file is to be processed by the deployment backend
+# Repeat lines 3-5 for each tool required by the module
