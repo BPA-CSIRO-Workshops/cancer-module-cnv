@@ -1,0 +1,18 @@
+btp::parent_path: '/mnt/workshop'
+btp::data_dir: 'data'
+btp::working_dir: 'working'
+btp::ubuntu_user: 'ubuntu'
+btp::trainee_user: 'trainee'
+btp::trainee_uid: 1001
+btp::trainee_gid: 1001
+
+btp::modules:
+qc:
+ dirs:
+  - 'qc'
+ data:
+  good_example.fastq: 
+  source:
+   - 'https://swift.rc.nectar.org.au:8888/v1/AUTH_809/NGSDataQC'
+  targets: 
+   - 'qc/good_example.fastq'
