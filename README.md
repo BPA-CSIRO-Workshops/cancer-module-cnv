@@ -30,6 +30,7 @@ the following 4 major elements:
  * **[Tools](tools)** - This describes which tools are used in the handout exercises and how to install them.
  * **[Presentations](presentations)** - This is where you will find presentations for introducing concepts that are
    explored in the handout exercises.
+
 License
 =======
 The contents of this repository are released under the Creative Commons
