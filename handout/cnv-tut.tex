@@ -1,0 +1,245 @@
+%----------------------------------------------------------------------------------------
+%	MODULE INFORMATION
+%----------------------------------------------------------------------------------------
+
+% Define the top matter
+\setModuleTitle{Copy Number Variation}
+\setModuleAuthors{%
+  Velimir Gayevskiy \mailto{v.gayevskiy@garvan.org.au} \\
+  Sonika Tyagi, AGRF \mailto{sonika.tyagi@agrf.org.au}%
+}
+
+\setModuleContributions{%
+  XXX \mailto{xxx@xxx} \\
+  yyy \mailto{yyy@yyy}% 
+}
+
+%----------------------------------------------------------------------------------------
+%	MODULE TITLE PAGE
+%----------------------------------------------------------------------------------------
+
+\chapter{\moduleTitle}
+
+%----------------------------------------------------------------------------------------
+
+\newpage
+
+%----------------------------------------------------------------------------------------
+%	LEARNING OUTCOMES
+%----------------------------------------------------------------------------------------
+
+\section{Key Learning Outcomes}
+
+After completing this practical the trainee should be able to:
+
+\begin{itemize}
+  \item Understand and perform a simple copy number variation analysis on NGS data
+  \item Become familiar with Sequenza and other CNV detection packages
+  \item Visualize CNV events for manual inspection
+\end{itemize}
+
+%----------------------------------------------------------------------------------------
+%	MODULE RESOURCES
+%----------------------------------------------------------------------------------------
+
+\section{Resources You'll be Using}
+
+\subsection{Tools Used}
+
+\begin{description}[style=multiline,labelindent=0cm,align=left,leftmargin=1cm]
+  \item[Sequenza] \hfill\\
+    \url{http://www.cbs.dtu.dk/biotools/sequenza/}
+  \item[IGV] \hfill\\
+    \url{http://www.broadinstitute.org/igv/}
+\end{description}
+
+%------------------------------------------------
+
+\subsection{Sources of Data}
+
+\url{http://sra.dnanexus.com/studies/ERP001071}\\
+\url{http://www.ncbi.nlm.nih.gov/pubmed/22194472}
+
+%----------------------------------------------------------------------------------------
+
+\newpage
+
+%----------------------------------------------------------------------------------------
+%	INTRODUCTION
+%----------------------------------------------------------------------------------------
+
+\section{Introduction}
+
+The goal of this hands-on session is to perform a copy number variation analysis on a normal/tumour pair of alignment files (BAM) produced by the mapping of Illumina short read sequencing. 
+
+To ensure reasonable analysis times, we will perform the analysis on a heavily subset pair of BAM files. These files contain just the first 60Mb of chromosome 1 but contain enough copy number events to enable interpretation and visualisation of the copy number variation that is present in entire cancer genomes. Sequenza is the tool we will use to perform this analysis. It consists of a Python pre-processing step followed by a second step in R to infer the depth ratio, cellularity, ploidy and to plot the results for interpretation.
+
+In the second part of the tutorial we will also be using IGV to visualise and manually inspect the copy number variation we inferred in the first part for validation purposes.
+
+%----------------------------------------------------------------------------------------
+%	THE ENVIRONMENT
+%----------------------------------------------------------------------------------------
+
+\section{Prepare the Environment}
+
+We will use a dataset derived from whole genome sequencing of a 33-yr-old lung adenocarcinoma patient, who is a never-smoker and has no familial cancer history. 
+
+The data files are contained in the subdirectory called \texttt{data} and are the following:
+
+\begin{description}[style=multiline,labelindent=1.5cm,align=left,leftmargin=2.5cm]
+  \item[\texttt{SM\_Blood.merged.mrkdup.realn.chr4\_1st50Mb.bam} and \texttt{SM\_Blood.merged.mrkdup.realn.chr4\_1st50Mb.bam.bai}] \hfill\\
+  \item[\texttt{SM\_liverMets.merged.mrkdup.realn.chr4\_1st50Mb.bam} and \texttt{SM\_liverMets.merged.mrkdup.realn.chr4\_1st50Mb.bam}] \hfill\\
+  These files are based on subsetting the whole genomes derived from blood and liver metastases to the first 40Mb of chromosome 4. This will allow our analyses to run in a sufficient time during the workshop, but it's worth being aware that these are just 1.25\% of the genome which highlights the length of time and resourced required to perform cancer genomics on full genomes!
+\end{description}
+
+\begin{steps}
+Open the Terminal and go to the \texttt{CNV} working directory:
+\begin{lstlisting}
+cd ~/CNV/
+\end{lstlisting}
+\end{steps}
+
+%\reversemarginpar\marginpar{\vskip+0em\hfill\includegraphics[height=1cm]{graphics/warning.png}}
+%\textcolor{red}{
+\begin{warning}
+  All commands entered into the terminal for this tutorial should be from within the
+  \textbf{\texttt{$\sim$/CNV}} directory.
+\end{warning}
+
+\begin{steps}
+Check that the \texttt{data} directory contains the above-mentioned files by typing:
+\begin{lstlisting}
+ls data
+\end{lstlisting}
+\end{steps}
+
+%----------------------------------------------------------------------------------------
+%	SEQUENZA PRE-PROCESSING
+%----------------------------------------------------------------------------------------
+
+% pypy sequenza-utils.py bam2seqz -n "$1" -t "$2" --fasta genome.fa -gc sequenza.gc50Base.txt.gz -C $3 | gzip > sample_id_$3.large.seqz.gz
+% pypy sequenza-utils.py seqz-binning -w 50 -s sample_id_$3.large.seqz.gz | tail -n +2 | gzip > sample_id_$3.seqz.gz
+% parallel --gnu -v analyze "$normalbam_path" "$tumourbam_path" {} :::  X {1..22} Y
+
+\section{Sequenza Pre-Processing}
+
+Sequenza is run in three steps. The first pre-processing step is run on the final normal and tumour mapped data (BAM files) in order to walk the genome in a pileup format (automatically generated by samtools). This first step finds high quality sites in the genomes and extracts their depth and genotype in the normal genome and calculates the variant alleles and allele frequencies in the tumour genome. The second step is to perform a binning on these sites to save space and analysis time in the third step. Finally, the third step is run in R to ...
+
+\subsection{Step 1: Pre-Processing - Walking the Genome}
+
+\begin{steps}
+\begin{lstlisting}
+pypy sequenza-utils.py bam2seqz -n data/SM\_Blood.merged.mrkdup.realn.chr4\_1st50Mb.bam -t data/SM\_liverMets.merged.mrkdup.realn.chr4\_1st50Mb.bam --fasta assets/genome_ref.fa -gc assets/sequenza.gc50Base.txt.gz | gzip > stage1-output.large.seqz.gz
+\end{lstlisting}
+\end{steps}
+
+\begin{note}
+Explanation of parameters
+\begin{description}[style=multiline,labelindent=0cm,align=right,leftmargin=\descriptionlabelspace,rightmargin=1.5cm,font=\ttfamily]
+ \item[-n] the normal BAM
+ \item[-t] the tumour BAM
+ \item[--fasta] the reference genome used for mapping (b37 from GATK here)
+ \item[-gc] GC content as windows through the genome (pre-generated and downloadable from the Sequenza website)
+\end{description}
+\end{note}
+
+This will take approximately 20 minutes to run...
+
+\begin{information}
+You can look at the first few lines of the output in the file \texttt{stage1-output.large.seqz.gz} with:
+ 
+\begin{lstlisting}
+zcat stage1-output.large.seqz.gz | head -n 20
+\end{lstlisting}
+\end{information}
+
+%------------------------------------------------
+
+\subsection{Step 2: Perform Binning}
+
+\begin{steps}
+\begin{lstlisting}
+pypy sequenza-utils.py seqz-binning -w 200 -s stage1-output.large.seqz.gz | gzip > stage1-output.binned.seqz.gz
+\end{lstlisting}
+\end{steps}
+
+%\reversemarginpar\marginpar{\vskip+0em\hfill\includegraphics[height=1cm]{graphics/notes.png}}
+\begin{note}
+Explanation of parameters
+\begin{description}[style=multiline,labelindent=0cm,align=right,leftmargin=\descriptionlabelspace,rightmargin=1.5cm,font=\ttfamily]
+ \item[-w] the window size (50 for exomes, 200 for genomes)
+ \item[-s] the large seqz file generated in the first step
+\end{description}
+\end{note}
+
+This step should take approximately X minutes to complete.
+
+%------------------------------------------------
+
+\subsection{Step 3: Running Sequenza Algorithms and Plotting Results}
+
+\begin{steps}
+Open the R terminal
+\begin{lstlisting}
+command
+\end{lstlisting}
+\end{steps}
+
+commands for R
+
+%----------------------------------------------------------------------------------------
+
+\newpage
+
+%----------------------------------------------------------------------------------------
+%	SEQUENZA ANALYSIS AND VISUALISATION
+%----------------------------------------------------------------------------------------
+
+\section{Sequenza Analysis and Visualisation}
+
+view PDFs
+
+questions/interpratation
+
+%----------------------------------------------------------------------------------------
+
+\newpage
+
+%----------------------------------------------------------------------------------------
+%	CNV VISUALISATION
+%----------------------------------------------------------------------------------------
+
+\section{CNV Visualisation/Confirmation in IGV}
+
+blurb about what we are going to do next. And a short description of the tools used and how to access it.
+
+\begin{steps}
+Step by step instruction to open the files 
+
+\begin{lstlisting}
+command
+\end{lstlisting}
+\end{steps}
+
+text
+
+\begin{note}
+Please note that the output files you are creating are saved in your present working directory. If you are not sure where you are in the file system try typing \texttt{pwd} on your command prompt to find out.
+\end{note}
+
+%----------------------------------------------------------------------------------------
+
+\newpage
+
+%----------------------------------------------------------------------------------------
+%	REFERENCES
+%----------------------------------------------------------------------------------------
+
+\section{References}
+
+%TODO Change to using BiBTeX
+\begin{enumerate}
+  \item example only: Trapnell, C., Pachter, L. \& Salzberg, S. L. TopHat: discovering splice
+  junctions with RNA-Seq. Bioinformatics 25, 1105-1111 (2009).
+  
+\end{enumerate}
