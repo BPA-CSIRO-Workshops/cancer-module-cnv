@@ -242,12 +242,16 @@ For a duplication of this size, we will not be able to easily observe it just by
 
 To begin, we will go to "Tools" then "Run igvtools..." in the IGV menubar. Specify the normal bam file as the input file and change the window size to 100000 (one hundred thousand). Then press the "Run" button and IGV will make the TDF file. Repeat this for the tumour genome.
 
-After you have both TDF files, go to "File" and "Load from file..." in the menubar and select both of them to open. Once you have opened them, they will appear as tracks along with the BAM tracks we loaded initially. Navigate back to the genomic coordinates of our event (5:21,111,248-21,522,065) and mouse over the two tracks to get the average depth values for the 100,000bp windows. What you should see is that the liverMets sample has 3-6 more coverage than the Blood sample.
+After you have both TDF files, go to "File" and "Load from file..." in the menubar and select both of them to open. Once you have opened them, they will appear as tracks along with the BAM tracks we loaded initially. Navigate back to the genomic coordinates of our event (5:21,111,248-21,522,065) and mouse over the two tracks to get the average depth values for the 100,000bp windows. What you should see is that the liverMets sample has 3-6 more coverage than the Blood sample for the four windows that cover this region.
 
-[why only 3-6X more?] math!
+This may seem a bit underwhelming, after all, wasn't the increase of the region to a copy number of 4, i.e. a doubling of reads in the tumour? To explain why we are only seeing such a small coverage increase, we need to turn to our good friend math.
+
+Imagine we have two 30X genomes for the normal and tumour samples and the tumour is at 100\% purity. If there is a copy number increase to 4 in the tumour from 2 in the normal, the duplicated segment should indeed have twice as many reads as the same segment in the normal genome. Now, lets imagine the tumour genome was only at a purity of 50\% (i.e. it contains 50\% normal cells and 50\% tumour cells). Now, half of the duplicated "tumour genome" segment will be at a copy number of 2 and half will be at 4. What does this mean when we sequence them as a mixture? The resulting average read depth increase of the block will be $(0.5*2)+(0.5*4) = 3$. Now what if we only have 20\% tumour cells in our "tumour genome"? This will be $(0.8*2)+(0.2*4) = 2.4$. You can see how sequencing a low cellularity tumour at a low depth is makes it much harder to infer copy number variations!
+
+Returning to our genomes at hand, since we saw a copy number increase of just 3-6X (about 10-20\%), perhaps our tumour genome is at a low cellularity? To find out, lets look at the Sequenza estimate of cellularity which we can find in the "CanGenWorkshop_model_fit.pdf" file in the results folder. Indeed, it looks like Sequenza has inferred the cellularity to be just 0.24 indicating that the "tumour genome" actually has quite a lot of normal cell contamination which reduces our power to infer copy numbers.
 
 \begin{note}
-Please note that the output files you are creating are saved in your present working directory. If you are not sure where you are in the file system try typing \texttt{pwd} on your command prompt to find out.
+It is possible to sequence through a low-cellularity sample when, for example, there is no way to take another sample as in the case of most biopsies. Sequencing through means to simply sequence the tumour at a much higher coverage, usually 90-120X. This will mean that there will be a total increase in reads supplying evidence for copy number events and variants and in aggregate these will still retain power to infer these events when using tools that look at the whole genome like Sequenza does.
 \end{note}
 
 %----------------------------------------------------------------------------------------
