@@ -130,7 +130,7 @@ Sequenza is run in three steps. The first pre-processing step is run on the fina
 
 \begin{steps}
 \begin{lstlisting}
-pypy sequenza-utils.py bam2seqz -n data/SM\_Blood.merged.mrkdup.realn.chr5.60Mb.bam -t data/SM\_liverMets.merged.mrkdup.realn.chr5.60Mb.bam --fasta assets/genome_ref.fa -gc assets/sequenza.gc50Base.txt.gz | gzip > stage1-output.large.seqz.gz
+pypy sequenza-utils.py bam2seqz -n data/SM\_Blood.merged.mrkdup.realn.chr5.60Mb.bam -t data/SM\_liverMets.merged.mrkdup.realn.chr5.60Mb.bam --fasta assets/genome\_ref.fa -gc assets/sequenza.gc50Base.txt.gz | gzip > stage1-output.large.seqz.gz
 \end{lstlisting}
 \end{steps}
 
@@ -195,11 +195,11 @@ library("sequenza")
 data.file <- "stage1-output.binned.seqz.gz"
 seqzdata <- sequenza.extract(data.file)
 CP.example <- sequenza.fit(seqzdata)
-sequenza.results(sequenza.extract = seqzdata, cp.table = CP.example, sample.id = "CanGenWorkshop", out.dir="sequenza_results")
+sequenza.results(sequenza.extract = seqzdata, cp.table = CP.example, sample.id = "CanGenWorkshop", out.dir="sequenza\_results")
 \end{lstlisting}
 \end{steps}
 
-If every command ran successfully, you will now have a "sequenza_results" folder containing 13 files.
+If every command ran successfully, you will now have a "sequenza\_results" folder containing 13 files.
 
 %----------------------------------------------------------------------------------------
 
@@ -226,7 +226,7 @@ questions/interpratation
 
 \section{CNV Visualisation/Confirmation in IGV}
 
-Let's see if we can visualise one of the CNV events where copy number increased significantly. We'll focus on the copy number 4 event seen at about 1/3 of the way through the CanGenWorkshop_genome_view.pdf output. First, we need to find the coordinates that have been predicted for this event. Open the "CanGenWorkshop_segments.txt" file in the results folder to view all predicted CNV events. There is only one at a copy number of 4 and it starts at 21111248 to 21522065 which is 410kb and corresponds to the small block we see in the genome view PDF.
+Let's see if we can visualise one of the CNV events where copy number increased significantly. We'll focus on the copy number 4 event seen at about 1/3 of the way through the CanGenWorkshop\_genome\_view.pdf output. First, we need to find the coordinates that have been predicted for this event. Open the "CanGenWorkshop\_segments.txt" file in the results folder to view all predicted CNV events. There is only one at a copy number of 4 and it starts at 21111248 to 21522065 which is 410kb and corresponds to the small block we see in the genome view PDF.
 
 We will now open IGV and see if we can observe the predicted increase in copy number within these genomic coordinates.
 
@@ -248,7 +248,7 @@ This may seem a bit underwhelming, after all, wasn't the increase of the region 
 
 Imagine we have two 30X genomes for the normal and tumour samples and the tumour is at 100\% purity. If there is a copy number increase to 4 in the tumour from 2 in the normal, the duplicated segment should indeed have twice as many reads as the same segment in the normal genome. Now, lets imagine the tumour genome was only at a purity of 50\% (i.e. it contains 50\% normal cells and 50\% tumour cells). Now, half of the duplicated "tumour genome" segment will be at a copy number of 2 and half will be at 4. What does this mean when we sequence them as a mixture? The resulting average read depth increase of the block will be $(0.5*2)+(0.5*4) = 3$. Now what if we only have 20\% tumour cells in our "tumour genome"? This will be $(0.8*2)+(0.2*4) = 2.4$. You can see how sequencing a low cellularity tumour at a low depth is makes it much harder to infer copy number variations!
 
-Returning to our genomes at hand, since we saw a copy number increase of just 3-6X (about 10-20\%), perhaps our tumour genome is at a low cellularity? To find out, lets look at the Sequenza estimate of cellularity which we can find in the "CanGenWorkshop_model_fit.pdf" file in the results folder. Indeed, it looks like Sequenza has inferred the cellularity to be just 0.24 indicating that the "tumour genome" actually has quite a lot of normal cell contamination which reduces our power to infer copy numbers.
+Returning to our genomes at hand, since we saw a copy number increase of just 3-6X (about 10-20\%), perhaps our tumour genome is at a low cellularity? To find out, lets look at the Sequenza estimate of cellularity which we can find in the "CanGenWorkshop\_model\_fit.pdf" file in the results folder. Indeed, it looks like Sequenza has inferred the cellularity to be just 0.24 indicating that the "tumour genome" actually has quite a lot of normal cell contamination which reduces our power to infer copy numbers.
 
 \begin{note}
 It is possible to sequence through a low-cellularity sample when, for example, there is no way to take another sample as in the case of most biopsies. Sequencing through means to simply sequence the tumour at a much higher coverage, usually 90-120X. This will mean that there will be a total increase in reads supplying evidence for copy number events and variants and in aggregate these will still retain power to infer these events when using tools that look at the whole genome like Sequenza does.
