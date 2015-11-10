@@ -96,7 +96,7 @@ The data files are contained in the subdirectory called \texttt{data} and are th
 \begin{steps}
 Open the Terminal and go to the \texttt{CNV} working directory:
 \begin{lstlisting}
-cd ~/CNV/
+cd ~/cnv/
 \end{lstlisting}
 \end{steps}
 
@@ -108,11 +108,9 @@ cd ~/CNV/
 \begin{steps}
 Check that the \texttt{data} directory contains the above-mentioned files by typing:
 \begin{lstlisting}
-ls data
+ll data
 \end{lstlisting}
 \end{steps}
-
-You should see [TODO]
 
 %----------------------------------------------------------------------------------------
 %	SEQUENZA PRE-PROCESSING
@@ -132,9 +130,11 @@ Sequenza is run in three steps. The first pre-processing step is run on the fina
 
 \begin{steps}
 \begin{lstlisting}
-pypy sequenza-utils.py bam2seqz -n data/SM\_Blood.merged.mrkdup.realn.chr5.60Mb.bam -t data/SM\_liverMets.merged.mrkdup.realn.chr5.60Mb.bam --fasta assets/genome\_ref.fa -gc assets/sequenza.gc50Base.txt.gz | gzip > stage1-output.large.seqz.gz
+pypy software/sequenza/sequenza-utils.py bam2seqz -n data/SM\_Blood.merged.mrkdup.realn.chr5.60Mb.bam -t data/SM\_liverMets.merged.mrkdup.realn.chr5.60Mb.bam --fasta assets/human\_g1k\_v37.fasta -gc assets/human\_g1k\_v37.gc50Base.txt.gz -C 5:1-60000000 | gzip > stage1.seqz.gz
 \end{lstlisting}
 \end{steps}
+
+Hint: press tab after typing a few characters of a directory of filename to auto-complete the rest. This makes entering long file names very quick.
 
 \begin{note}
 Explanation of parameters
@@ -146,7 +146,9 @@ Explanation of parameters
 \end{description}
 \end{note}
 
-This will take approximately 30 minutes to run.
+There will not be any indication that it is running once you launch the command, to make sure it is running open a new Terminal tab with shift + control + T and type the command 'top'. You should see the top line being the command 'pypy' with a \% CPU usage of 98/99\%. Press q to quit out of this process view and close the tab. If everything is running correctly, it will take approximately 40 minutes to run.
+
+Once the command is done you will be returned to the terminal prompt. Make sure the output file is the correct size by typing 'll -h' from the Terminal window that you ran Sequenza from, there should be a file stage1-output.large.seqz.gz of the size 326M.
 
 \begin{information}
 You can look at the first few lines of the output in the file \texttt{stage1-output.large.seqz.gz} with:
@@ -164,7 +166,7 @@ zcat stage1-output.large.seqz.gz | head -n 20
 
 \begin{steps}
 \begin{lstlisting}
-pypy sequenza-utils.py seqz-binning -w 200 -s stage1-output.large.seqz.gz | gzip > stage1-output.binned.seqz.gz
+pypy software/sequenza/sequenza-utils.py seqz-binning -w 200 -s stage1.seqz.gz | gzip > stage2.seqz.gz
 \end{lstlisting}
 \end{steps}
 
@@ -172,12 +174,12 @@ pypy sequenza-utils.py seqz-binning -w 200 -s stage1-output.large.seqz.gz | gzip
 \begin{note}
 Explanation of parameters
 \begin{description}[style=multiline,labelindent=0cm,align=right,leftmargin=\descriptionlabelspace,rightmargin=1.5cm,font=\ttfamily]
- \item[-w] the window size (50 for exomes, 200 for genomes)
+ \item[-w] the window size (typically 50 for exomes, 200 for genomes)
  \item[-s] the large seqz file generated in the first step
 \end{description}
 \end{note}
 
-This step should take approximately [TODO X] minutes to complete.
+This step should take approximately 4 minutes to complete.
 
 %------------------------------------------------
 
@@ -196,7 +198,8 @@ You should now see the R prompt identified with "> ".
 Run the Sequenza R commands
 \begin{lstlisting}
 library("sequenza")
-data.file <- "stage1-output.binned.seqz.gz"
+setwd("/home/trainee/cnv")
+data.file <- "stage2.seqz.gz"
 seqzdata <- sequenza.extract(data.file)
 CP.example <- sequenza.fit(seqzdata)
 sequenza.results(sequenza.extract = seqzdata, cp.table = CP.example, sample.id = "CanGenWorkshop", out.dir="sequenza_results")
@@ -215,11 +218,45 @@ If every command ran successfully, you will now have a "sequenza\_results" folde
 
 \section{Sequenza Analysis Results and Visualisation}
 
-One of the first and most important estimates that Sequenza provides is the tumour cellularity (the estimated percentage of tumour cells in the tumour genome). This estimate is based on the B allele frequency and depth ratio through the genome and is an important metric to know for interpretation of Sequenza results and for other analyses. Lets look at the cellularity estimate for our analysis by opening CanGenWorkshop\_model\_fit.pdf. The cellularity estimate is at the top along with the average ploidy estimate and the standard deviation of the B allele frequency. We can see that the cellularity has been estimated at 24\% which is fairly low and we will see why this is bad in the next section on CNV visualisation. The ploidy value of 2.1 indicates this piece of the genome is not hugely amplified or deleted and the BAF standard deviation indicates there are no significant long losses of heterozygosity.
+One of the first and most important estimates that Sequenza provides is the tumour cellularity (the estimated percentage of tumour cells in the tumour genome). This estimate is based on the B allele frequency and depth ratio through the genome and is an important metric to know for interpretation of Sequenza results and for other analyses. Lets look at the cellularity estimate for our analysis by opening CanGenWorkshop\_model\_fit.pdf with the command:
 
-Let's now look at the CNV inferences through our genomic block. Open the CanGenWorkshop\_genome\_view.pdf file. This file contains three "pages" of copy number events through the entire genomic block. The first page shows copy numbers of the A (red) and B (blue) alleles, the second page shows the overall copy number change and the third page shows the B allele frequency and depth ratio through genomic block [TODO describe the first 2 more after looking at the paper]. Overall, we see that our block is at a copy number of 2 with a small duplication to copy number 4 about 1/3 of the way through the block and a reduction in copy number to 1 copy about 4/5 of the way through the block. The gap that you see just before this reduction in copy number is the chromosomal centromere - an area that is notoriously difficult to sequence so always ends up in a gap with short read data.
+\begin{steps}
+\begin{lstlisting}
+evince sequenza_results/CanGenWorkshop_model_fit.pdf
+\end{lstlisting}
+\end{steps}
 
-You can see how this is a very easy to read output and lets you immediately see the frequency and severity of copy number events through your genome. Let's compare the small genomic block we ran with the same output from the entire genome which has been pre-computed for you. Look in the folder [TODO] and to find the same 13 output files as for the small genomic block. As before, let's look at the cellularity estimate in CanGenWorkshop_model_fit.pdf. It now looks like it's even worse at just 16\%! A change is to be expected as we we're only analysing [X\% of the genome previously]. Let's now look at the whole genome copy number profile in CanGenWorkshop_genome_view.pdf. You can see that there are a number of copy number events across the genome and our genomic block (the first 60Mb of chromosome 5) is inferred as mostly copy number 4 followed by a reduction to copy number 2, rather than 2 to 1 as we saw in the output we generated. The reason for this is that Sequenza uses the genome-wide depth ratio and BAF in order to estimate copy number, if you ask it to analyse a small block mostly at copy number 4 with a small reduction to copy number 2, the most likely scenario in lieu of more data is that this is a copy number 2 block with a reduction to 1. It's important to carefully examine the cellularity, ploidy and BAF estimates of your sample along with the plots of model fit (CanGenWorkshop_model_fit.pdf) and cellularity/ploidy contours (CanGenWorkshop_CP_contours.pdf) in order to decide if you believe Sequenza's inference of the copy numbers.
+The cellularity estimate is at the top along with the average ploidy estimate and the standard deviation of the B allele frequency. We can see that the cellularity has been estimated at 24\% which is fairly low and we will see why this is bad in the next section on CNV visualisation. The ploidy value of 2.1 indicates this piece of the genome is not hugely amplified or deleted and the BAF standard deviation indicates there are no significant long losses of heterozygosity.
+
+Close the PDF window to resume the Terminal prompt.
+
+Let's now look at the CNV inferences through our genomic block. Open the ≈ file with:
+
+\begin{steps}
+\begin{lstlisting}
+evince sequenza_results/CanGenWorkshop_genome_view.pdf
+\end{lstlisting}
+\end{steps}
+
+This file contains three "pages" of copy number events through the entire genomic block. The first page shows copy numbers of the A (red) and B (blue) alleles, the second page shows the overall copy number change and the third page shows the B allele frequency and depth ratio through genomic block [TODO describe the first 2 more after looking at the paper]. Overall, we see that our block is at a copy number of 2 with a small duplication to copy number 4 about 1/3 of the way through the block and a reduction in copy number to 1 copy about 4/5 of the way through the block. The gap that you see just before this reduction in copy number is the chromosomal centromere - an area that is notoriously difficult to sequence so always ends up in a gap with short read data.
+
+You can see how this is a very easy to read output and lets you immediately see the frequency and severity of copy number events through your genome. Let's compare the small genomic block we ran with the same output from the entire genome which has been pre-computed for you. This is located in the [TODO correct? pre_generated/whole_genome] folder and contains the same 13 output files as for the small genomic block. As before, let's look at the cellularity estimate with:
+
+\begin{steps}
+\begin{lstlisting}
+evince [pre_generated/whole_genome/CanGenWorkshop_model_fit.pdf]
+\end{lstlisting}
+\end{steps}
+
+It now looks like it's even worse at just 16\%! A change is to be expected as we we're only analysing 1.9\% of the genome. Let's now look at the whole genome copy number profile with:
+
+\begin{steps}
+\begin{lstlisting}
+evince [pre_generated/whole_genome/CanGenWorkshop_genome_view.pdf]
+\end{lstlisting}
+\end{steps}
+
+You can see that there are a number of copy number events across the genome and our genomic block (the first 60Mb of chromosome 5) is inferred as mostly copy number 4 followed by a reduction to copy number 2, rather than 2 to 1 as we saw in the output we generated. The reason for this is that Sequenza uses the genome-wide depth ratio and BAF in order to estimate copy number, if you ask it to analyse a small block mostly at copy number 4 with a small reduction to copy number 2, the most likely scenario in lieu of more data is that this is a copy number 2 block with a reduction to 1. It's important to carefully examine the cellularity, ploidy and BAF estimates of your sample along with the plots of model fit (CanGenWorkshop_model_fit.pdf) and cellularity/ploidy contours (CanGenWorkshop_CP_contours.pdf) in order to decide if you believe Sequenza's inference of the copy numbers. Have a look at these for yourself if you want to get a better idea of how Sequenza makes its inferences and conclusions.
 
 %----------------------------------------------------------------------------------------
 
@@ -231,7 +268,15 @@ You can see how this is a very easy to read output and lets you immediately see 
 
 \section{CNV Visualisation/Confirmation in IGV}
 
-Let's see if we can visualise one of the CNV events where copy number increased significantly. We'll focus on the copy number 4 event seen at about 1/3 of the way through the CanGenWorkshop\_genome\_view.pdf output. First, we need to find the coordinates that have been predicted for this event. Open the "CanGenWorkshop\_segments.txt" file in the results folder to view all predicted CNV events. There is only one at a copy number of 4 and it starts at 21111248 to 21522065 which is 410kb and corresponds to the small block we see in the genome view PDF.
+Let's see if we can visualise one of the CNV events where copy number increased significantly. We'll focus on the copy number 4 event seen at about 1/3 of the way through the CanGenWorkshop\_genome\_view.pdf output we generated. First, we need to find the coordinates that have been predicted for this event. Have a look at the CanGenWorkshop\_segments.txt file in the results folder to view all predicted CNV events with:
+
+\begin{steps}
+\begin{lstlisting}
+less sequenza_results/CanGenWorkshop_segments.txt
+\end{lstlisting}
+\end{steps}
+
+There is only one at a copy number of 4 and it starts at 21111248 to 21522065 which is 410kb and corresponds to the small block we see in the genome view PDF.
 
 We will now open IGV and see if we can observe the predicted increase in copy number within these genomic coordinates.
 
@@ -258,7 +303,7 @@ Returning to our genomes at hand, since we saw a copy number increase of just 3-
 [mention increased depth ratio and decreases BAF somewhere]
 
 \begin{note}
-It is possible to sequence through a low-cellularity sample when, for example, there is no way to take another sample as in the case of most biopsies. Sequencing through means to simply sequence the tumour at a much higher coverage, usually 90-120X. This will mean that there will be a total increase in reads supplying evidence for copy number events and variants and in aggregate these will still retain power to infer these events when using tools that look at the whole genome like Sequenza does.
+It is possible to sequence through a low-cellularity sample when, for example, there is no way to take another sample (as is the case of most biopsies). "Sequencing through" means to simply sequence the tumour at a much higher coverage, usually 90-120X. This will mean that there will be a total increase in reads supplying evidence for copy number events and variants and in aggregate these will still retain power to infer these events when using tools that look at the whole genome like Sequenza does.
 \end{note}
 
 %----------------------------------------------------------------------------------------
