@@ -1,18 +1,37 @@
-btp::parent_path: '/mnt/workshop'
-btp::data_dir: 'data'
-btp::working_dir: 'working'
-btp::ubuntu_user: 'ubuntu'
-btp::trainee_user: 'trainee'
-btp::trainee_uid: 1001
-btp::trainee_gid: 1001
-
 btp::modules:
-qc:
- dirs:
-  - 'qc'
- data:
-  good_example.fastq: 
-  source:
-   - 'https://swift.rc.nectar.org.au:8888/v1/AUTH_809/NGSDataQC'
-  targets: 
-   - 'qc/good_example.fastq'
+cnv:
+  dirs:
+    - 'cnv'
+  data:
+    SM_Blood.merged.mrkdup.realn.chr5.60Mb.bam: 
+      source:
+        - 'https://s3-ap-southeast-2.amazonaws.com/cancer-data-cnv'
+      targets: 
+        - 'cnv/SM_Blood.merged.mrkdup.realn.chr5.60Mb.bam'
+    SM_Blood.merged.mrkdup.realn.chr5.60Mb.bam.bai: 
+      source:
+        - 'https://s3-ap-southeast-2.amazonaws.com/cancer-data-cnv'
+      targets: 
+        - 'cnv/SM_Blood.merged.mrkdup.realn.chr5.60Mb.bam.bai'
+    SM_liverMets.merged.mrkdup.realn.chr5.60Mb.bam: 
+      source:
+        - 'https://s3-ap-southeast-2.amazonaws.com/cancer-data-cnv'
+      targets: 
+        - 'cnv/SM_liverMets.merged.mrkdup.realn.chr5.60Mb.bam'
+    SM_liverMets.merged.mrkdup.realn.chr5.60Mb.bam.bai: 
+      source:
+        - 'https://s3-ap-southeast-2.amazonaws.com/cancer-data-cnv'
+      targets: 
+        - 'cnv/SM_liverMets.merged.mrkdup.realn.chr5.60Mb.bam.bai'
+    sequenza_results_chr5_60Mb.zip: 
+      source:
+        - 'https://s3-ap-southeast-2.amazonaws.com/cancer-data-cnv/sequenza_results_chr5_60Mb.zip'
+      targets: 
+        - 'cnv/sequenza_results_chr5_60Mb.zip'
+    sequenza_results_whole_genome.zip: 
+      source:
+        - 'https://s3-ap-southeast-2.amazonaws.com/cancer-data-cnv/sequenza_results_whole_genome.zip'
+      targets: 
+        - 'cnv/sequenza_results_whole_genome.zip'
+    
+ 
