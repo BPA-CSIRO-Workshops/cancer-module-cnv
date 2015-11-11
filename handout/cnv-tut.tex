@@ -5,13 +5,13 @@
 % Define the top matter
 \setModuleTitle{Copy Number Variation}
 \setModuleAuthors{%
-  Velimir Gayevskiy \mailto{v.gayevskiy@garvan.org.au} \\
+  Velimir Gayevskiy, Garvan Institute \mailto{v.gayevskiy@garvan.org.au} \\
   Sonika Tyagi, AGRF \mailto{sonika.tyagi@agrf.org.au}%
 }
 
 \setModuleContributions{%
-  XXX \mailto{xxx@xxx} \\
-  yyy \mailto{yyy@yyy}% 
+  Velimir Gayevskiy, Garvan Institute \mailto{v.gayevskiy@garvan.org.au} \\
+  Sonika Tyagi, AGRF \mailto{sonika.tyagi@agrf.org.au}%
 }
 
 %----------------------------------------------------------------------------------------
@@ -71,9 +71,9 @@ After completing this practical the trainee should be able to:
 
 \section{Introduction}
 
-The goal of this hands-on session is to perform a copy number variation analysis on a normal/tumour pair of alignment files (BAMs) produced by the mapping of Illumina short read sequencing. 
+The goal of this hands-on session is to perform a copy number variation analysis (CNV) on a normal/tumour pair of alignment files (BAMs) produced by the mapping of Illumina short read sequencing data. 
 
-To ensure reasonable analysis times, we will perform the analysis on a heavily subset pair of BAM files. These files contain just the first 60Mb of chromosome 5 but contain several examples of inferred copy number events to enable interpretation and visualisation of the copy number variation that is present in entire cancer genomes. Sequenza is the tool we will use to perform this analysis. It consists of a Python pre-processing step followed by a second step in R to infer the depth ratio, cellularity, ploidy and to plot the results for interpretation.
+To ensure reasonable analysis times, we will perform the analysis on a heavily subset pair of BAM files. These files contain just the first 60Mb of chromosome 5 but contain several examples of inferred copy number events to enable interpretation and visualisation of the copy number variation that is present in entire cancer genomes. Sequenza is the tool we will use to perform this analysis. It consists of a two Python pre-processing steps followed by a third step in R to infer the depth ratio, cellularity, ploidy and to plot the results for interpretation.
 
 In the second part of the tutorial we will also be using IGV to visualise and manually inspect the copy number variation we inferred in the first part for validation purposes. This section will also include a discussion on the importance of good quality data by highlighting the inadequacies of the workshop dataset and the implications this has on analysis results.
 
@@ -88,9 +88,9 @@ We will use a dataset derived from whole genome sequencing of a 33-yr-old lung a
 The data files are contained in the subdirectory called \texttt{data} and are the following:
 
 \begin{description}[style=multiline,labelindent=1.5cm,align=left,leftmargin=2.5cm]
-  \item[\texttt{SM\_Blood.merged.mrkdup.realn.chr5.60Mb.bam} and \texttt{SM\_Blood.merged.mrkdup.realn.chr5.60Mb.bam.bai}] \hfill\\
-  \item[\texttt{SM\_liverMets.merged.mrkdup.realn.chr5.60Mb.bam} and \texttt{SM\_liverMets.merged.mrkdup.realn.chr5.60Mb.bam}] \hfill\\
-  These files are based on subsetting the whole genomes derived from blood and liver metastases to the first 60Mb of chromosome 5. This will allow our analyses to run in a sufficient time during the workshop, but it's worth being aware that we are analysing just 1.9\% of the genome which highlights the length of time and resources required to perform cancer genomics on full genomes!
+  \item[\texttt{normal.chr5.60Mb.bam} and \texttt{normal.chr5.60Mb.bam.bai}] \hfill\\
+  \item[\texttt{tumour.chr5.60Mb.bam} and \texttt{tumour.chr5.60Mb.bam}] \hfill\\
+  These files are based on subsetting the whole genomes derived from blood and liver metastases to the first 60Mb of chromosome 5. This will allow our analyses to run in a sufficient time during the workshop, but it's worth being aware that we are analysing just 1.9\% of the genome which will highlight the length of time and resources required to perform cancer genomics on full genomes!
 \end{description}
 
 \begin{steps}
@@ -102,7 +102,7 @@ cd ~/cnv/
 
 \begin{warning}
   All commands entered into the terminal for this tutorial should be from within the
-  \textbf{\texttt{$\sim$/CNV}} directory.
+  \textbf{\texttt{$\sim$/cnv}} directory.
 \end{warning}
 
 \begin{steps}
@@ -112,25 +112,23 @@ ll data
 \end{lstlisting}
 \end{steps}
 
+All commands used in this tutorial can be copy/pasted from the commands.sh file in the \texttt{cnv} directory.
+
 %----------------------------------------------------------------------------------------
 %	SEQUENZA PRE-PROCESSING
 %----------------------------------------------------------------------------------------
 
-% pypy sequenza-utils.py bam2seqz -n "$1" -t "$2" --fasta genome.fa -gc sequenza.gc50Base.txt.gz -C $3 | gzip > sample_id_$3.large.seqz.gz
-% pypy sequenza-utils.py seqz-binning -w 50 -s sample_id_$3.large.seqz.gz | tail -n +2 | gzip > sample_id_$3.seqz.gz
-% parallel --gnu -v analyze "$normalbam_path" "$tumourbam_path" {} :::  X {1..22} Y
+\section{Sequenza CNV Analysis}
 
-\section{Sequenza Pre-Processing}
-
-Sequenza is run in three steps. The first pre-processing step is run on the final normal and tumour mapped data (BAM files) in order to walk the genome in a pileup format (automatically generated by samtools). This first step finds high quality sites in the genomes and extracts their depth and genotype in the normal genome and calculates the variant alleles and allele frequencies in the tumour genome. The second step is to perform a binning on these sites to save space and analysis time in the third step. Finally, the third step is run in R normalize the depth ratio between the normal/tumour genomes, infer cellularity and ploidy and graphically output results for interpretation.
+Sequenza is run in three steps. The first pre-processing step is run on the final normal and tumour mapped data (BAM files) in order to walk the genome in a pileup format (automatically generated by samtools). This first step finds high quality sites in the genomes and extracts their depth and genotype in the normal genome and calculates the variant alleles and allele frequencies in the tumour genome. The second step is to perform a binning on these sites to save space and analysis time in the third step. Finally, the third step is run in R normalise the depth ratio between the normal/tumour genomes, infer cellularity and ploidy and graphically output results for interpretation.
 
 %------------------------------------------------
 
-\subsection{Step 1: Pre-Processing - Walking the Genome}
+\subsection{Step 1: Pre-Processing -- Walking the Genome}
 
 \begin{steps}
 \begin{lstlisting}
-pypy software/sequenza/sequenza-utils.py bam2seqz -n data/SM\_Blood.merged.mrkdup.realn.chr5.60Mb.bam -t data/SM\_liverMets.merged.mrkdup.realn.chr5.60Mb.bam --fasta assets/human\_g1k\_v37.fasta -gc assets/human\_g1k\_v37.gc50Base.txt.gz -C 5:1-60000000 | gzip > stage1.seqz.gz
+pypy software/sequenza/sequenza-utils.py bam2seqz -n data/normal.chr5.60Mb.bam -t data/tumour.chr5.60Mb.bam --fasta assets/human\_g1k\_v37.fasta -gc assets/human\_g1k\_v37.gc50Base.txt.gz -C 5:1-60000000 | gzip > stage1.seqz.gz
 \end{lstlisting}
 \end{steps}
 
@@ -141,24 +139,25 @@ Explanation of parameters
 \begin{description}[style=multiline,labelindent=0cm,align=right,leftmargin=\descriptionlabelspace,rightmargin=1.5cm,font=\ttfamily]
  \item[-n] the normal BAM
  \item[-t] the tumour BAM
- \item[--fasta] the reference genome used for mapping (b37 from GATK here)
+ \item[--fasta] the reference genome used for mapping (b37 here)
  \item[-gc] GC content as windows through the genome (pre-generated and downloadable from the Sequenza website)
+ \item[-C] specifies the genomic location to process
 \end{description}
 \end{note}
 
-There will not be any indication that it is running once you launch the command, to make sure it is running open a new Terminal tab with shift + control + T and type the command 'top'. You should see the top line being the command 'pypy' with a \% CPU usage of 98/99\%. Press q to quit out of this process view and close the tab. If everything is running correctly, it will take approximately 40 minutes to run.
+There will not be any indication that it is running once you launch the command, to make sure it is running open a new Terminal tab with Shift + Control + T (or from the menu with File then Open Tab) and type the command 'top'. You should see the top line being the command 'pypy' with a \% CPU usage of 98/99\%. Press q to quit out of this process view and go back to the tab running Sequenza. If everything is running correctly, it will take approximately 40 minutes to run. Go have a coffee!
 
-Once the command is done you will be returned to the terminal prompt. Make sure the output file is the correct size by typing 'll -h' from the Terminal window that you ran Sequenza from, there should be a file stage1-output.large.seqz.gz of the size 326M.
+Once the command is done you will be returned to the terminal prompt. Make sure the output file is the correct size by typing 'll -h' from the Terminal window that you ran Sequenza from, there should be a file called \texttt{stage1.seqz.gz} of the size 326M.
 
 \begin{information}
-You can look at the first few lines of the output in the file \texttt{stage1-output.large.seqz.gz} with:
+You can look at the first few lines of the output in the file \texttt{stage1.seqz.gz} with:
  
 \begin{lstlisting}
-zcat stage1-output.large.seqz.gz | head -n 20
+zcat stage1.seqz.gz | head -n 20
 \end{lstlisting}
 \end{information}
 
-[TODO description of these lines]
+This output has one line for each position in the BAM and includes information on the position, depths, allele frequencies, zygosity, GC in the location. 
 
 %------------------------------------------------
 
@@ -170,7 +169,6 @@ pypy software/sequenza/sequenza-utils.py seqz-binning -w 200 -s stage1.seqz.gz |
 \end{lstlisting}
 \end{steps}
 
-%\reversemarginpar\marginpar{\vskip+0em\hfill\includegraphics[height=1cm]{graphics/notes.png}}
 \begin{note}
 Explanation of parameters
 \begin{description}[style=multiline,labelindent=0cm,align=right,leftmargin=\descriptionlabelspace,rightmargin=1.5cm,font=\ttfamily]
@@ -252,7 +250,7 @@ You can see how this is a very easy to read output and lets you immediately see 
 
 \begin{steps}
 \begin{lstlisting}
-evince [pre_generated/results_whole_genome/CanGenWorkshop_model_fit.pdf]
+evince pre_generated/results_whole_genome/CanGenWorkshop_model_fit.pdf
 \end{lstlisting}
 \end{steps}
 
@@ -260,7 +258,7 @@ It now looks like it's even worse at just 16\%! A change is to be expected as we
 
 \begin{steps}
 \begin{lstlisting}
-evince [pre_generated/results_whole_genome/CanGenWorkshop_genome_view.pdf]
+evince pre_generated/results_whole_genome/CanGenWorkshop_genome_view.pdf
 \end{lstlisting}
 \end{steps}
 
