@@ -33,5 +33,3 @@ cnv:
         - 'https://s3-ap-southeast-2.amazonaws.com/cancer-data-cnv/sequenza_results_whole_genome.zip'
       targets: 
         - 'cnv/sequenza_results_whole_genome.zip'
-    
- 
