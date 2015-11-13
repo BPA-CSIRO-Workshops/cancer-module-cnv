@@ -90,19 +90,20 @@ The data files are contained in the subdirectory called \texttt{data} and are th
 \begin{description}[style=multiline,labelindent=1.5cm,align=left,leftmargin=2.5cm]
   \item[\texttt{normal.chr5.60Mb.bam} and \texttt{normal.chr5.60Mb.bam.bai}] \hfill\\
   \item[\texttt{tumour.chr5.60Mb.bam} and \texttt{tumour.chr5.60Mb.bam}] \hfill\\
-  These files are based on subsetting the whole genomes derived from blood and liver metastases to the first 60Mb of chromosome 5. This will allow our analyses to run in a sufficient time during the workshop, but it's worth being aware that we are analysing just 1.9\% of the genome which will highlight the length of time and resources required to perform cancer genomics on full genomes!
 \end{description}
+
+These files are based on subsetting the whole genomes derived from blood and liver metastases to the first 60Mb of chromosome 5. This will allow our analyses to run in a sufficient time during the workshop, but it's worth being aware that we are analysing just 1.9\% of the genome which will highlight the length of time and resources required to perform cancer genomics on full genomes!
 
 \begin{steps}
 Open the Terminal and go to the \texttt{CNV} working directory:
 \begin{lstlisting}
-cd ~/cnv/
+cd cnv/
 \end{lstlisting}
 \end{steps}
 
 \begin{warning}
   All commands entered into the terminal for this tutorial should be from within the
-  \textbf{\texttt{$\sim$/cnv}} directory.
+  \textbf{\texttt{cnv}} directory.
 \end{warning}
 
 \begin{steps}
@@ -194,7 +195,7 @@ R
 \end{lstlisting}
 \end{steps}
 
-You should now see the R prompt identified with "> ".
+You should now see the R prompt identified with "\textgreater ".
 
 \begin{steps}
 Run the Sequenza R commands
@@ -240,9 +241,8 @@ The cellularity estimate is at the top along with the average ploidy estimate an
 
 Close the PDF window to resume the Terminal prompt.
 
-Let's now look at the CNV inferences through our genomic block. Open the genome copy number visualisation file with:
-
 \begin{steps}
+Let's now look at the CNV inferences through our genomic block. Open the genome copy number visualisation file with:
 \begin{lstlisting}
 evince sequenza_results/CanGenWorkshop_genome_view.pdf
 \end{lstlisting}
@@ -258,7 +258,7 @@ evince pre_generated/results_whole_genome/CanGenWorkshop_model_fit.pdf
 \end{lstlisting}
 \end{steps}
 
-It now looks like it's even worse at just 16\%! A change is to be expected as we we're only analysing 1.9\% of the genome. Let's now look at the whole genome copy number profile with:
+It now looks like it's even worse at just 16\%! A change is to be expected as we were only analysing 1.9\% of the genome. Let's now look at the whole genome copy number profile with:
 
 \begin{steps}
 \begin{lstlisting}
@@ -286,15 +286,12 @@ less sequenza_results/CanGenWorkshop_segments.txt
 \end{lstlisting}
 \end{steps}
 
-There is only one at a copy number of 4 and it starts at 21051700 to 21522065 which is 470kb and corresponds to the small block we see in the genome view PDF.
+There is only one at a copy number of 4 (CNt column) and it starts at 21051700 to 21522065 which is 470kb and corresponds to the small block we see in the genome view PDF.
 
-Quit out of less by pressing q.
-
-We will now open IGV and see if we can observe the predicted increase in copy number within these genomic coordinates.
+Quit out of viewing the segments file by pressing q.
 
 \begin{steps}
-Step by step instructions to open the BAMs in IGV and navigate to the coordinates of interest.
-
+We will now open IGV and see if we can observe the predicted increase in copy number within these genomic coordinates.
 \begin{lstlisting}
 /home/trainee/snv/Applications/igv/igv.sh
 \end{lstlisting}
@@ -306,15 +303,13 @@ For a duplication of this size, we will not be able to easily observe it just by
 
 To begin, we will go to "Tools" then "Run igvtools..." in the IGV menubar. Specify the normal bam file (under \texttt{cnv} then \texttt{data}) as the input file and change the window size to 100000 (one hundred thousand). Then press the "Run" button and IGV will make the TDF file. This takes about 5 minutes. Repeat this for the tumour genome.
 
-After you have both TDF files, go to "File" and "Load from file..." in the menubar and select the BAM and TDF files to open. Once you have opened them, they will appear as tracks along with the BAM tracks we loaded initially. Navigate back to the genomic coordinates of our event (5:21,051,700-21,522,065) and mouse over the two tracks to get the average depth values for the 100,000bp windows. What you should see is that the liverMets sample has 3-6 more coverage than the Blood sample for the four windows that cover this region.
+After you have both TDF files, go to "File" and "Load from file..." in the menubar and select the BAM and TDF files to open. Once you have opened them, they will appear as tracks along with the BAM tracks we loaded initially. Navigate to the genomic coordinates of our event (5:21,051,700-21,522,065) by typing it in the coordinate box at the top. Mouse over the two blue tracks to get the average depth values for the 100,000bp windows. What you should see is that the liverMets sample has 3-6X more coverage than the Blood sample for the four windows that cover this region.
 
 This may seem a bit underwhelming, after all, wasn't the increase of the region to a copy number of 4, i.e. we expect a doubling of reads in the tumour? To explain why we are only seeing such a small coverage increase, we need to turn to our good friend mathematics!
 
-Imagine we have two 30X genomes for the normal and tumour samples and the tumour is at 100\% purity. If there is a copy number increase to 4 in the tumour from 2 in the normal, the duplicated segment should indeed have twice as many reads as the same segment in the normal genome. Now, lets imagine the tumour genome was only at a purity of 50\% (i.e. it contains 50\% normal cells and 50\% tumour cells). Now, half of the duplicated "tumour genome" segment will be at a copy number of 2 and half will be at 4. What does this mean when we sequence them as a mixture? The resulting average read depth increase of the block will be $(0.5*2)+(0.5*4) = 3$. Now what if we only have 20\% tumour cells in our "tumour genome"? This will be $(0.8*2)+(0.2*4) = 2.4$. You can see how sequencing a low cellularity tumour at a low depth is makes it much harder to infer copy number variations!
+Imagine we have two 30X genomes for the normal and tumour samples and the tumour is at 100\% purity. If there is a copy number increase to 4 in the tumour from 2 in the normal, the duplicated segment should indeed have twice as many reads as the same segment in the normal genome. Now, lets imagine the tumour genome was only at a purity of 50\% (i.e. it contains 50\% normal cells and 50\% tumour cells). Now, half of the duplicated "tumour genome" segment will be at a copy number of 2 and half will be at 4. What does this mean when we sequence them as a mixture? The resulting average read depth increase of the block will be $(0.5*2)+(0.5*4) = 3$. Now what if we only have 16\% tumour cells in our "tumour genome"? This will be $(0.84*2)+(0.16*4) = 2.32$. You can see how sequencing a low cellularity tumour at a low depth makes it much harder to infer copy number variations!
 
-Returning to our genomes at hand, since we saw a copy number increase of just 3-6X (about 10-20\% more reads), perhaps our tumour genome is at a low cellularity? To find out, lets look at the Sequenza estimate of cellularity which we can find in the "CanGenWorkshop\_model\_fit.pdf" file in the results folder. Indeed, it looks like Sequenza has inferred the cellularity to be just 0.24 indicating that the "tumour genome" actually has quite a lot of normal cell contamination which reduces our power to infer copy numbers.
-
-[mention increased depth ratio and decreases BAF somewhere]
+Returning to our genomes at hand, when we previously looked at the cellularity estimate of this tumour we saw it was 20\% from the small block we ran or 16\% from the whole genome. Thus, the read depth increase of just 3-6X (about 10-20\% more reads) in this segment is not surprising. A low cellularity tumour greatly reduces our power to infer copy number events as relatively small changes in depth can occur by chance in the genome and these can be mis-identified as copy number changes. As well as this, it reduces our power for other analyses since we must also remember that a tumour can itself contain multiple clones which have to share just 16\% of reads.
 
 \begin{note}
 It is possible to sequence through a low-cellularity sample when, for example, there is no way to take another sample (as is the case of most biopsies). "Sequencing through" means to simply sequence the tumour at a much higher coverage, usually 90-120X. This will mean that there will be a total increase in reads supplying evidence for copy number events and variants and in aggregate these will still retain power to infer these events when using tools that look at the whole genome like Sequenza does.
