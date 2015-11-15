@@ -34,9 +34,9 @@ After completing this practical the trainee should be able to:
 
 \begin{itemize}
   \item Understand and perform a simple copy number variation analysis on NGS data
-  \item Become familiar with Sequenza and other CNV detection packages
+  \item Become familiar with Sequenza
   \item Understand the CNV inference process as an interplay between depth of sequencing, cellularity and B-allele frequency
-  \item Visualize CNV events for manual inspection
+  \item Visualize CNV events by manual inspection
 \end{itemize}
 
 %----------------------------------------------------------------------------------------
@@ -307,12 +307,12 @@ After you have both TDF files, go to "File" and "Load from file..." in the menub
 
 This may seem a bit underwhelming, after all, wasn't the increase of the region to a copy number of 4, i.e. we expect a doubling of reads in the tumour? To explain why we are only seeing such a small coverage increase, we need to turn to our good friend mathematics!
 
-Imagine we have two 30X genomes for the normal and tumour samples and the tumour is at 100\% purity. If there is a copy number increase to 4 in the tumour from 2 in the normal, the duplicated segment should indeed have twice as many reads as the same segment in the normal genome. Now, lets imagine the tumour genome was only at a purity of 50\% (i.e. it contains 50\% normal cells and 50\% tumour cells). Now, half of the duplicated "tumour genome" segment will be at a copy number of 2 and half will be at 4. What does this mean when we sequence them as a mixture? The resulting average read depth increase of the block will be $(0.5*2)+(0.5*4) = 3$. Now what if we only have 16\% tumour cells in our "tumour genome"? This will be $(0.84*2)+(0.16*4) = 2.32$. You can see how sequencing a low cellularity tumour at a low depth makes it much harder to infer copy number variations!
+Imagine we have two 30X genomes for the normal and tumour samples and the tumour is at 100\% purity. If there is a copy number increase to 4 in the tumour from 2 in the normal, the duplicated segment should indeed have twice as many reads as the same segment in the normal genome. Now, lets imagine the tumour genome was only at a purity of 50\% (i.e. it contains 50\% normal cells and 50\% tumour cells). Now, half of the duplicated "tumour genome" segment will be at a copy number of 2 and half will be at 4. What does this mean when we sequence them as a mixture? The resulting average copy number of the block will be $(0.5*2)+(0.5*4) = 3$. Now what if we only have 16\% tumour cells in our "tumour genome"? This will be $(0.84*2)+(0.16*4) = 2.32$. You can see how sequencing a low cellularity tumour at a low depth makes it much harder to infer copy number variations!
 
 Returning to our genomes at hand, when we previously looked at the cellularity estimate of this tumour we saw it was 20\% from the small block we ran or 16\% from the whole genome. Thus, the read depth increase of just 3-6X (about 10-20\% more reads) in this segment is not surprising. A low cellularity tumour greatly reduces our power to infer copy number events as relatively small changes in depth can occur by chance in the genome and these can be mis-identified as copy number changes. As well as this, it reduces our power for other analyses since we must also remember that a tumour can itself contain multiple clones which have to share just 16\% of reads.
 
 \begin{note}
-It is possible to sequence through a low-cellularity sample when, for example, there is no way to take another sample (as is the case of most biopsies). "Sequencing through" means to simply sequence the tumour at a much higher coverage, usually 90-120X. This will mean that there will be a total increase in reads supplying evidence for copy number events and variants and in aggregate these will still retain power to infer these events when using tools that look at the whole genome like Sequenza does.
+It is possible to sequence through a low-cellularity sample when, for example, there is no way to take another sample (as is the case of most biopsies). "Sequencing through" means to simply sequence the tumour at a much higher coverage, usually 90-120X. This will mean that there will be a net increase in reads supplying evidence for copy number events and variants and in aggregate these will still retain power to infer these events when using tools that look at the whole genome like Sequenza does.
 \end{note}
 
 %----------------------------------------------------------------------------------------
