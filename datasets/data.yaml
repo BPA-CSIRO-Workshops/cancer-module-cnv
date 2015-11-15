@@ -1,18 +1,38 @@
-btp::parent_path: '/mnt/workshop'
-btp::data_dir: 'data'
-btp::working_dir: 'working'
-btp::ubuntu_user: 'ubuntu'
-btp::trainee_user: 'trainee'
-btp::trainee_uid: 1001
-btp::trainee_gid: 1001
-
 btp::modules:
-qc:
- dirs:
-  - 'qc'
- data:
-  good_example.fastq: 
-  source:
-   - 'https://swift.rc.nectar.org.au:8888/v1/AUTH_809/NGSDataQC'
-  targets: 
-   - 'qc/good_example.fastq'
+  cnv:
+    dirs:
+      - 'cnv'
+      - 'cnv/assets'
+      - 'cnv/data'
+      - 'cnv/software'
+    data:
+      human_g1k_v37.dict: 
+        source: 'https://s3-ap-southeast-2.amazonaws.com/cancer-data-cnv/assets'
+        targets: 'assets/human_g1k_v37.dict'
+      human_g1k_v37.fasta: 
+        source: 'https://s3-ap-southeast-2.amazonaws.com/cancer-data-cnv/assets'
+        targets: 'assets/human_g1k_v37.fasta'
+      human_g1k_v37.fasta.fai: 
+        source: 'https://s3-ap-southeast-2.amazonaws.com/cancer-data-cnv/assets'
+        targets: 'assets/human_g1k_v37.fasta.fai'
+      human_g1k_v37.gc50Base.txt.gz: 
+        source: 'https://s3-ap-southeast-2.amazonaws.com/cancer-data-cnv/assets'
+        targets: 'assets/human_g1k_v37.gc50Base.txt.gz'
+      normal.chr5.60Mb.bam: 
+        source: 'https://s3-ap-southeast-2.amazonaws.com/cancer-data-cnv/data'
+        targets: 'assets/normal.chr5.60Mb.bam'
+      normal.chr5.60Mb.bam.bai: 
+        source: 'https://s3-ap-southeast-2.amazonaws.com/cancer-data-cnv/data'
+        targets: 'assets/normal.chr5.60Mb.bam.bai'
+      tumour.chr5.60Mb.bam: 
+        source: 'https://s3-ap-southeast-2.amazonaws.com/cancer-data-cnv/data'
+        targets: 'assets/tumour.chr5.60Mb.bam'
+      tumour.chr5.60Mb.bam.bai: 
+        source: 'https://s3-ap-southeast-2.amazonaws.com/cancer-data-cnv/data'
+        targets: 'assets/tumour.chr5.60Mb.bam.bai'
+      commands.sh: 
+        source: 'https://s3-ap-southeast-2.amazonaws.com/cancer-data-cnv/software'
+        targets: 'assets/commands.sh'
+      pre_generated.tar.gz: 
+        source: 'https://s3-ap-southeast-2.amazonaws.com/cancer-data-cnv'
+        targets: 'assets/pre_generated.tar.gz'
