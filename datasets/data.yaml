@@ -48,6 +48,6 @@ btp::modules:
         targets:
           - 'cnv/pre_generated.tar.gz'
       sequenza-utils.py: 
-        source: 'https://s3-ap-southeast-2.amazonaws.com/cancer-data-cnv/sequenza'
+        source: 'https://s3-ap-southeast-2.amazonaws.com/cancer-data-cnv/software/sequenza'
         targets: 
           - 'cnv/software/sequenza/sequenza-utils.py'
