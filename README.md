@@ -16,9 +16,7 @@ Bioinformatics Training Platform (BTP) Module: Copy Number Variation
     * Visualize CNV events by manual inspection
   * Time Required
     * 
-  * Compute Requirements
-    * 
-	
+
 License
 =======
 The contents of this repository are released under the Creative Commons
