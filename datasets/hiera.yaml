@@ -1,9 +1,0 @@
----
-:backends:
-  - yaml
-
-:yaml:
-  :datadir: '/etc/puppet/'
-
-:hierarchy:
-  - cancer-cnv-data

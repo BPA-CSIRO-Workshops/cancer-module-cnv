@@ -1,0 +1,53 @@
+btp::modules:
+  cnv:
+    dirs:
+      - 'cnv'
+      - 'cnv/assets'
+      - 'cnv/data'
+      - 'cnv/software'
+      - 'cnv/software/sequenza'
+    data:
+      human_g1k_v37.dict: 
+        source: 'https://s3-ap-southeast-2.amazonaws.com/cancer-data-cnv/assets'
+        targets: 
+          - 'cnv/assets/human_g1k_v37.dict'
+      human_g1k_v37.fasta: 
+        source: 'https://s3-ap-southeast-2.amazonaws.com/cancer-data-cnv/assets'
+        targets: 
+          - 'cnv/assets/human_g1k_v37.fasta'
+      human_g1k_v37.fasta.fai: 
+        source: 'https://s3-ap-southeast-2.amazonaws.com/cancer-data-cnv/assets'
+        targets: 
+          - 'cnv/assets/human_g1k_v37.fasta.fai'
+      human_g1k_v37.gc50Base.txt.gz: 
+        source: 'https://s3-ap-southeast-2.amazonaws.com/cancer-data-cnv/assets'
+        targets: 
+          - 'cnv/assets/human_g1k_v37.gc50Base.txt.gz'
+      normal.chr5.60Mb.bam: 
+        source: 'https://s3-ap-southeast-2.amazonaws.com/cancer-data-cnv/data'
+        targets: 
+          - 'cnv/data/normal.chr5.60Mb.bam'
+      normal.chr5.60Mb.bam.bai: 
+        source: 'https://s3-ap-southeast-2.amazonaws.com/cancer-data-cnv/data'
+        targets: 
+          - 'cnv/data/normal.chr5.60Mb.bam.bai'
+      tumour.chr5.60Mb.bam: 
+        source: 'https://s3-ap-southeast-2.amazonaws.com/cancer-data-cnv/data'
+        targets: 
+          - 'cnv/data/tumour.chr5.60Mb.bam'
+      tumour.chr5.60Mb.bam.bai: 
+        source: 'https://s3-ap-southeast-2.amazonaws.com/cancer-data-cnv/data'
+        targets: 
+          - 'cnv/data/tumour.chr5.60Mb.bam.bai'
+      commands.sh: 
+        source: 'https://s3-ap-southeast-2.amazonaws.com/cancer-data-cnv'
+        targets: 
+          - 'cnv/commands.sh'
+      pre_generated.tar.gz: 
+        source: 'https://s3-ap-southeast-2.amazonaws.com/cancer-data-cnv'
+        targets:
+          - 'cnv/pre_generated.tar.gz'
+      sequenza-utils.py: 
+        source: 'https://s3-ap-southeast-2.amazonaws.com/cancer-data-cnv/software/sequenza'
+        targets: 
+          - 'cnv/software/sequenza/sequenza-utils.py'

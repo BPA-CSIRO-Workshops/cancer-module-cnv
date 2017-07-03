@@ -8,46 +8,46 @@ btp::modules:
       - 'cnv/software/sequenza'
     data:
       human_g1k_v37.dict: 
-        source: 'https://s3-ap-southeast-2.amazonaws.com/cancer-data-cnv/assets'
+        source: 'https://swift.rc.nectar.org.au:8888/v1/AUTH_d57d0879288840e199bb1a49ae012c78/CancerDataCNV/assets'
         targets: 
           - 'cnv/assets/human_g1k_v37.dict'
       human_g1k_v37.fasta: 
-        source: 'https://s3-ap-southeast-2.amazonaws.com/cancer-data-cnv/assets'
+        source: 'https://swift.rc.nectar.org.au:8888/v1/AUTH_d57d0879288840e199bb1a49ae012c78/CancerDataCNV/assets'
         targets: 
           - 'cnv/assets/human_g1k_v37.fasta'
       human_g1k_v37.fasta.fai: 
-        source: 'https://s3-ap-southeast-2.amazonaws.com/cancer-data-cnv/assets'
+        source: 'https://swift.rc.nectar.org.au:8888/v1/AUTH_d57d0879288840e199bb1a49ae012c78/CancerDataCNV/assets'
         targets: 
           - 'cnv/assets/human_g1k_v37.fasta.fai'
       human_g1k_v37.gc50Base.txt.gz: 
-        source: 'https://s3-ap-southeast-2.amazonaws.com/cancer-data-cnv/assets'
+        source: 'https://swift.rc.nectar.org.au:8888/v1/AUTH_d57d0879288840e199bb1a49ae012c78/CancerDataCNV/assets'
         targets: 
           - 'cnv/assets/human_g1k_v37.gc50Base.txt.gz'
       normal.chr5.60Mb.bam: 
-        source: 'https://s3-ap-southeast-2.amazonaws.com/cancer-data-cnv/data'
+        source: 'https://swift.rc.nectar.org.au:8888/v1/AUTH_d57d0879288840e199bb1a49ae012c78/CancerDataCNV/data'
         targets: 
           - 'cnv/data/normal.chr5.60Mb.bam'
       normal.chr5.60Mb.bam.bai: 
-        source: 'https://s3-ap-southeast-2.amazonaws.com/cancer-data-cnv/data'
+        source: 'https://swift.rc.nectar.org.au:8888/v1/AUTH_d57d0879288840e199bb1a49ae012c78/CancerDataCNV/data'
         targets: 
           - 'cnv/data/normal.chr5.60Mb.bam.bai'
       tumour.chr5.60Mb.bam: 
-        source: 'https://s3-ap-southeast-2.amazonaws.com/cancer-data-cnv/data'
+        source: 'https://swift.rc.nectar.org.au:8888/v1/AUTH_d57d0879288840e199bb1a49ae012c78/CancerDataCNV/data'
         targets: 
           - 'cnv/data/tumour.chr5.60Mb.bam'
       tumour.chr5.60Mb.bam.bai: 
-        source: 'https://s3-ap-southeast-2.amazonaws.com/cancer-data-cnv/data'
+        source: 'https://swift.rc.nectar.org.au:8888/v1/AUTH_d57d0879288840e199bb1a49ae012c78/CancerDataCNV/data'
         targets: 
           - 'cnv/data/tumour.chr5.60Mb.bam.bai'
       commands.sh: 
-        source: 'https://s3-ap-southeast-2.amazonaws.com/cancer-data-cnv'
+        source: 'https://swift.rc.nectar.org.au:8888/v1/AUTH_d57d0879288840e199bb1a49ae012c78/CancerDataCNV'
         targets: 
           - 'cnv/commands.sh'
       pre_generated.tar.gz: 
-        source: 'https://s3-ap-southeast-2.amazonaws.com/cancer-data-cnv'
+        source: 'https://swift.rc.nectar.org.au:8888/v1/AUTH_d57d0879288840e199bb1a49ae012c78/CancerDataCNV'
         targets:
           - 'cnv/pre_generated.tar.gz'
       sequenza-utils.py: 
-        source: 'https://s3-ap-southeast-2.amazonaws.com/cancer-data-cnv/software/sequenza'
+        source: 'https://swift.rc.nectar.org.au:8888/v1/AUTH_d57d0879288840e199bb1a49ae012c78/CancerDataCNV/software/sequenza'
         targets: 
           - 'cnv/software/sequenza/sequenza-utils.py'
