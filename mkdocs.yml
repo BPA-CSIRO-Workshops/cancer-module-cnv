@@ -1,0 +1,56 @@
+site_name: Copy Number Variation
+site_description: This contains all material for the Copy Number Variation training module.
+site_author: Authors
+docs_dir: handout
+
+#site_url: 'https://github.com/BPA-CSIRO-Workshops/cancer-module-cnv'
+
+copyright: '&copy; The authors; 2017-'
+
+#Documentation and theme
+theme: material
+
+# Options
+extra:
+  palette:
+    primary: 'indigo'
+    accent: 'light blue'
+
+  feature:
+    tabs: false
+
+  site_favicon: 'media/logos/Bioplatforms-Australia-favicon2.png'
+
+markdown_extensions:
+    - admonition
+    - smarty
+    - tables
+    - markdown_include.include
+    - codehilite(linenums=True)
+#    - codehilite
+    - toc(permalink=true)
+    - mdx_math
+    - pymdownx.betterem(smart_enable=all)
+    - pymdownx.caret
+    - pymdownx.critic
+    - pymdownx.inlinehilite
+    - pymdownx.magiclink
+    - pymdownx.mark
+    - pymdownx.smartsymbols
+    - pymdownx.superfences
+    - pymdownx.tasklist(custom_checkbox=true)
+    - pymdownx.tilde
+    - pymdownx.details
+
+extra_css:
+    #- css/extra.css
+    - css/details.css
+
+extra_javascript:
+    - https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML
+    - js/details.js
+
+pages:
+- Home: index.md
+- Copy Number Variation: handout.md
+- License: license.md
