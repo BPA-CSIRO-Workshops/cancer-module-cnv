@@ -52,5 +52,5 @@ extra_javascript:
 
 pages:
 - Home: index.md
-- Copy Number Variation: handout.md
+- Handout: handout.md
 - License: license.md
