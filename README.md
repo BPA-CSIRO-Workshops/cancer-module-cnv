@@ -1,4 +1,4 @@
-# cancer-module-cnv
+# Copy Number Variation
 Bioinformatics Training Platform (BTP) Module: Copy Number Variation
 
   * Topic
